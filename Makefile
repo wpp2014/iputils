@@ -3,14 +3,19 @@
 #
 
 # CC
+#指定gcc程序
 CC=gcc
 # Path to parent kernel include files directory
+#当前核心头文件的路径
 LIBC_INCLUDE=/usr/include
 # Libraries
+#添加其他的库（包括静态的和动态的）
 ADDLIB=
 # Linker flags
+#链接的标志
 LDFLAG_STATIC=-Wl,-Bstatic
 LDFLAG_DYNAMIC=-Wl,-Bdynamic
+#指定加载的库
 LDFLAG_CAP=-lcap
 LDFLAG_GNUTLS=-lgnutls-openssl
 LDFLAG_CRYPTO=-lcrypto
@@ -23,6 +28,7 @@ LDFLAG_SYSFS=-lsysfs
 #
 
 # Capability support (with libcap) [yes|static|no]
+#变量定义，设置开关
 USE_CAP=yes
 # sysfs support (with libsysfs - deprecated) [no|yes|static]
 USE_SYSFS=no
@@ -50,7 +56,7 @@ ENABLE_RDISC_SERVER=no
 # What a pity, all new gccs are buggy and -Werror does not work. Sigh.
 # CCOPT=-fno-strict-aliasing -Wstrict-prototypes -Wall -Werror -g
 CCOPT=-fno-strict-aliasing -Wstrict-prototypes -Wall -g
-CCOPTOPT=-O3
+CCOPTOPT=-O3 #3级优化
 GLIBCFIX=-D_GNU_SOURCE
 DEFINES=
 LDLIB=
