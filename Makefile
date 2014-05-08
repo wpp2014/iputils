@@ -280,7 +280,7 @@ snapshot:
 	@sed -e "s/^%define ssdate .*/%define ssdate $(DATE)/" iputils.spec > iputils.spec.tmp
 	#将inputils.spec.tmp重命名为iputils.spec.
 	@mv iputils.spec.tmp iputils.spec
-	#
+	#将TAG变量中的内容以"static char SNAPSHOT[] = \"$(TAG)\"的形式重定向到SNAPSHOT.h文档中
 	@echo "static char SNAPSHOT[] = \"$(TAG)\";" > SNAPSHOT.h
 	#生成snapshot的doc文档。
 	@$(MAKE) -C doc snapshot
