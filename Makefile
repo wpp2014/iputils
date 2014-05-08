@@ -202,8 +202,8 @@ DEF_tftpd =
 DEF_tftpsubs =
 LIB_tftpd =
 
-tftpd: tftpsubs.o
-tftpd.o tftpsubs.o: tftp.h
+tftpd: tftpsubs.o	#tftpd依赖tftpsus.o文件
+tftpd.o tftpsubs.o: tftp.h      #tftpd.o和tftpsubs.o文件依赖tftp.h头文件	
 
 # -------------------------------------
 # ninfod
