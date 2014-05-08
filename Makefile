@@ -267,11 +267,16 @@ snapshot:
 	#将TAG变量的内容重定向到RELNOTES.NEW文档中。
 	@echo "[$(TAG)]" > RELNOTES.NEW
 	#输出一个空行
-	@echo >>RELNOTES.NEW			
+	@echo >>RELNOTES.NEW
+	#将git log和git shortlog的输出信息重定向到RELOTES.NEW文档里。
 	@git log --no-merges $(LASTTAG).. | git shortlog >> RELNOTES.NEW
+	#输出一个空行
 	@echo >> RELNOTES.NEW
+	#将RELNOTES里的内容重定向的RELNOTES.NEW文档里。
 	@cat RELNOTES >> RELNOTES.NEW
+	#将RELNOTES.NEW文档重命名为RELNOTES
 	@mv RELNOTES.NEW RELNOTES
+	#
 	@sed -e "s/^%define ssdate .*/%define ssdate $(DATE)/" iputils.spec > iputils.spec.tmp
 	@mv iputils.spec.tmp iputils.spec
 	@echo "static char SNAPSHOT[] = \"$(TAG)\";" > SNAPSHOT.h
