@@ -138,11 +138,13 @@ LDLIBS=$(LDLIB) $(ADDLIB)			     #链接的库函数
 
 #将命令 uname -n 的输出给变量UNAME_N
 UNAME_N:=$(shell uname -n)
+#将HEAD中的-.*替换为/
 LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')
 #以%Y/%m/%d的格式输出年月日。如：20140508， 并保存到TODAY变量中。
 TODAY=$(shell date +%Y/%m/%d)
-#以不同的格式输出并保存日期，存放到DATE变量中，同时赋给TAG。
-DATE=$(shell date --date $(TODAY) +%Y%m%d)	
+#将TODAY中的内容赋给DATE。以%Y%m%d的格式。
+DATE=$(shell date --date $(TODAY) +%Y%m%d)
+#将TODAY的内容赋给TAG，以s%Y%m%d的格式
 TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)
 
 
@@ -211,7 +213,7 @@ DEF_tracepath = $(DEF_IDN)
 LIB_tracepath = $(LIB_IDN)
 
 # tracepath6
-DEF_tracepath6 = $(DEF_IDN)
+DEF_tracepath6 = $(D将HEAD中的-.*替换为/EF_IDN)
 LIB_tracepath6 =
 
 # traceroute6
@@ -249,7 +251,7 @@ ifeq ($(KERNEL_INCLUDE),)			#如果变量KERNEL_INCLUDE是空，则报错。
 	@echo "Please, set correct KERNEL_INCLUDE"; false
 else
 	@set -e; \
-	if [ ! -r $(KERNEL_INCLUDE)/linux/autoconf.h ]; then \           #如果autoconf.h不是一个普通文件，则报错。
+	if [ ! -r $(KERNEL_INCLUDE)/linux/autoconf.h ]; then \           #如果autoconf.h不是一个可读文件，则报错。
 		echo "Please, set correct KERNEL_INCLUDE"; false; fi
 endif
 
@@ -296,7 +298,7 @@ snapshot:
 	@cat RELNOTES >> RELNOTES.NEW
 	#将RELNOTES.NEW文档重命名为RELNOTES
 	@mv RELNOTES.NEW RELNOTES
-	#
+	#将日期以及
 	@sed -e "s/^%define ssdate .*/%define ssdate $(DATE)/" iputils.spec > iputils.spec.tmp
 	#将inputils.spec.tmp重命名为iputils.spec.
 	@mv iputils.spec.tmp iputils.spec
