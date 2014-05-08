@@ -207,6 +207,7 @@ tftpd.o tftpsubs.o: tftp.h
 
 # -------------------------------------
 # ninfod
+#生成ninfod可执行文件
 ninfod:
 	@set -e; \
 		if [ ! -f ninfod/Makefile ]; then \ 
@@ -238,11 +239,12 @@ html:
 	$(MAKE) -C doc html
 
 clean:
-	@rm -f *.o $(TARGETS)
-	@$(MAKE) -C Modules clean
-	@$(MAKE) -C doc clean
+	@rm -f *.o $(TARGETS)  #删除所有生成的目标的二进制文件
+	#指定读取makefile的目录。
+	@$(MAKE) -C Modules clean  #执行Modules目录下Makefile中的clean，删除指定的文件。
+	@$(MAKE) -C doc clean		#执行doc目录下Makefile中的clean，删除指定的文件。
 	@set -e; \
-		if [ -f ninfod/Makefile ]; then \
+		if [ -f ninfod/Makefile ]; then \	#如果ninfod目录下存在makefile文件，就进入ninfod目录并读取malefile文件，执行clean操作。
 			$(MAKE) -C ninfod clean; \
 		fi
 
@@ -269,4 +271,3 @@ snapshot:
 	@git commit -a -m "iputils-$(TAG)"
 	@git tag -s -m "iputils-$(TAG)" $(TAG)
 	@git archive --format=tar --prefix=iputils-$(TAG)/ $(TAG) | bzip2 -9 > ../iputils-$(TAG).tar.bz2
-
