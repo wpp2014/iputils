@@ -286,5 +286,5 @@ snapshot:
 	@git commit -a -m "iputils-$(TAG)"
 	#创建带有说明的标签，并用私钥签名
 	@git tag -s -m "iputils-$(TAG)" $(TAG)
-	#
+	#打包，供别人下载
 	@git archive --format=tar --prefix=iputils-$(TAG)/ $(TAG) | bzip2 -9 > ../iputils-$(TAG).tar.bz2
