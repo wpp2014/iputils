@@ -6,11 +6,11 @@
 #指定gcc程序
 CC=gcc
 # Path to parent kernel include files directory
-#当前核心头文件的路径
+#指定库函数的路径
 LIBC_INCLUDE=/usr/include
 # Libraries
 #添加其他的库（包括静态的和动态的）
-ADDLIB=
+ADDLIB=    #不添加其他的库
 # Linker flags
 #链接的标志
 #Wl选项告诉编译器将后面的参数传递给链接器
@@ -130,8 +130,8 @@ IPV4_TARGETS=tracepath ping clockdiff rdisc arping tftpd rarpd
 IPV6_TARGETS=tracepath6 traceroute6 ping6
 TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
 
-CFLAGS=$(CCOPTOPT) $(CCOPT) $(GLIBCFIX) $(DEFINES)
-LDLIBS=$(LDLIB) $(ADDLIB)
+CFLAGS=$(CCOPTOPT) $(CCOPT) $(GLIBCFIX) $(DEFINES)   #编译选项
+LDLIBS=$(LDLIB) $(ADDLIB)			     #
 
 UNAME_N:=$(shell uname -n)
 LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')
@@ -209,7 +209,7 @@ tftpd.o tftpsubs.o: tftp.h
 # ninfod
 ninfod:
 	@set -e; \
-		if [ ! -f ninfod/Makefile ]; then \
+		if [ ! -f ninfod/Makefile ]; then \ 
 			cd ninfod; \
 			./configure; \
 			cd ..; \
