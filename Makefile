@@ -55,9 +55,13 @@ ENABLE_RDISC_SERVER=no
 # -------------------------------------
 # What a pity, all new gccs are buggy and -Werror does not work. Sigh.
 # CCOPT=-fno-strict-aliasing -Wstrict-prototypes -Wall -Werror -g
+#如果函数的声明或定义没有指出参数类型，编译器就发出警告
+#使用-fno-strict-aliasing参数进行编译
 CCOPT=-fno-strict-aliasing -Wstrict-prototypes -Wall -g
-CCOPTOPT=-O3 #3级优化
-GLIBCFIX=-D_GNU_SOURCE
+#3使用级优化
+CCOPTOPT=-O3 
+#表示编写的代码符合GUN规范
+#于Linux下的信号量/读写锁文件进行编译，需要在编译选项中指明-D_GNU_SOURCE 
 DEFINES=
 LDLIB=
 
