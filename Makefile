@@ -44,10 +44,13 @@ WITHOUT_IFADDRS=no
 ARPING_DEFAULT_DEVICE=
 
 # GNU TLS library for ping6 [yes|no|static]
+#允许ping6加密协议库
 USE_GNUTLS=yes
 # Crypto library for ping6 [shared|static]
+#允许和ping6共享加密的库
 USE_CRYPTO=shared
 # Resolv library for ping6 [yes|static]
+
 USE_RESOLV=yes
 # ping6 source routing (deprecated by RFC5095) [no|yes|RFC3542]
 ENABLE_PING6_RTHDR=no
