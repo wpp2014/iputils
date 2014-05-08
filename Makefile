@@ -133,10 +133,11 @@ TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
 CFLAGS=$(CCOPTOPT) $(CCOPT) $(GLIBCFIX) $(DEFINES)   #编译选项
 LDLIBS=$(LDLIB) $(ADDLIB)			     
 
-UNAME_N:=$(shell uname -n)	#将命令 uname -n 的输出给变量UNAME_N
+#将命令 uname -n 的输出给变量UNAME_N
+UNAME_N:=$(shell uname -n)
 LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')
 TODAY=$(shell date +%Y/%m/%d)
-DATE=$(shell date --date $(TODAY) +%Y%m%d)
+DATE=$(shell date --date $(TODAY) +%Y%m%d)	
 TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)
 
 
@@ -202,8 +203,11 @@ DEF_tftpd =
 DEF_tftpsubs =
 LIB_tftpd =
 
-tftpd: tftpsubs.o	#tftpd依赖tftpsus.o文件
-tftpd.o tftpsubs.o: tftp.h      #tftpd.o和tftpsubs.o文件依赖tftp.h头文件	
+#tftpd依赖tftpsus.o文件
+tftpd: tftpsubs.o	
+#tftpd.o和tftpsubs.o文件依赖tftp.h头文件
+tftpd.o tftpsubs.o: tftp.h      
+	
 
 # -------------------------------------
 # ninfod
@@ -219,24 +223,24 @@ ninfod:
 
 # -------------------------------------
 # modules / check-kernel are only for ancient kernels; obsolete
-check-kernel:
-ifeq ($(KERNEL_INCLUDE),)			#如果KER
+#检查内核
+check-kernel:              
+ifeq ($(KERNEL_INCLUDE),)			#如果变量KERNEL_INCLUDE是空，则报错。
 	@echo "Please, set correct KERNEL_INCLUDE"; false
 else
 	@set -e; \
-	if [ ! -r $(KERNEL_INCLUDE)/linux/autoconf.h ]; then \
+	if [ ! -r $(KERNEL_INCLUDE)/linux/autoconf.h ]; then \           #如果autoconf.h不是一个普通文件，则报错。
 		echo "Please, set correct KERNEL_INCLUDE"; false; fi
 endif
 
 modules: check-kernel
-	$(MAKE) KERNEL_INCLUDE=$(KERNEL_INCLUDE) -C Modules
+	$(MAKE) KERNEL_INCLUDE=$(KERNEL_INCLUDE) -C Modules    #指定Modules路径中的Makefile文件编译内核
 
 # -------------------------------------
 man:
-	$(MAKE) -C doc man
-
+	$(MAKE) -C doc man	#生成man的帮助文档
 html:
-	$(MAKE) -C doc html
+	$(MAKE) -C doc html	#生成网页格式的帮助文档
 
 clean:
 	@rm -f *.o $(TARGETS)  #删除所有生成的目标的二进制文件
@@ -249,7 +253,8 @@ clean:
 			$(MAKE) -C ninfod clean; \
 		fi
 
-distclean: clean					#清除ninfod目录下所有生成的文件。
+#清除ninfod目录下所有生成的文件。
+distclean: clean					
 	@set -e; \
 		if [ -f ninfod/Makefile ]; then \
 			$(MAKE) -C ninfod distclean; \
@@ -257,9 +262,12 @@ distclean: clean					#清除ninfod目录下所有生成的文件。
 
 # -------------------------------------
 snapshot:
+	#如果UNAME_N和pleiades的十六进制不等，提示信息，并退出。
 	@if [ x"$(UNAME_N)" != x"pleiades" ]; then echo "Not authorized to advance snapshot"; exit 1; fi
+	#将TAG变量的内容重定向到RELNOTES.NEW文档中。
 	@echo "[$(TAG)]" > RELNOTES.NEW
-	@echo >>RELNOTES.NEW
+	#输出一个空行
+	@echo >>RELNOTES.NEW			
 	@git log --no-merges $(LASTTAG).. | git shortlog >> RELNOTES.NEW
 	@echo >> RELNOTES.NEW
 	@cat RELNOTES >> RELNOTES.NEW
@@ -268,7 +276,7 @@ snapshot:
 	@mv iputils.spec.tmp iputils.spec
 	@echo "static char SNAPSHOT[] = \"$(TAG)\";" > SNAPSHOT.h
 	@$(MAKE) -C doc snapshot
-	@$(MAKE) man
+	@$(MAKE) man				
 	@git commit -a -m "iputils-$(TAG)"
 	@git tag -s -m "iputils-$(TAG)" $(TAG)
 	@git archive --format=tar --prefix=iputils-$(TAG)/ $(TAG) | bzip2 -9 > ../iputils-$(TAG).tar.bz2
