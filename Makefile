@@ -278,9 +278,13 @@ snapshot:
 	@mv RELNOTES.NEW RELNOTES
 	#
 	@sed -e "s/^%define ssdate .*/%define ssdate $(DATE)/" iputils.spec > iputils.spec.tmp
+	#将inputils.spec.tmp重命名为iputils.spec.
 	@mv iputils.spec.tmp iputils.spec
+	#
 	@echo "static char SNAPSHOT[] = \"$(TAG)\";" > SNAPSHOT.h
+	#生成snapshot的doc文档。
 	@$(MAKE) -C doc snapshot
+	#执行man命令
 	@$(MAKE) man	
 	#修改/添加/上传 文件
 	@git commit -a -m "iputils-$(TAG)"
