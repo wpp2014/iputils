@@ -244,11 +244,12 @@ clean:
 	@$(MAKE) -C Modules clean  #执行Modules目录下Makefile中的clean，删除指定的文件。
 	@$(MAKE) -C doc clean		#执行doc目录下Makefile中的clean，删除指定的文件。
 	@set -e; \
-		if [ -f ninfod/Makefile ]; then \	#如果ninfod目录下存在makefile文件，就进入ninfod目录并读取malefile文件，执行clean操作。
+		if [ -f ninfod/Makefile ]; then \	#如果ninfod目录下存在makefile文件，就进入ninfod目录并读取malefile文件，
+							#执行clean操作， 清除之前编译的可执行文件及配置文件。
 			$(MAKE) -C ninfod clean; \
 		fi
 
-distclean: clean
+distclean: clean					#清除ninfod目录下所有生成的文件。
 	@set -e; \
 		if [ -f ninfod/Makefile ]; then \
 			$(MAKE) -C ninfod distclean; \
