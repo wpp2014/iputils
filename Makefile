@@ -209,13 +209,13 @@ tftpd.o tftpsubs.o: tftp.h
 # ninfod
 #生成ninfod可执行文件
 ninfod:
-	@set -e; \
+	@set -e; \					#如果ninfod目录下没有Makefiel文件，就创建一个。
 		if [ ! -f ninfod/Makefile ]; then \ 
 			cd ninfod; \
 			./configure; \
 			cd ..; \
 		fi; \
-		$(MAKE) -C ninfod
+		$(MAKE) -C ninfod		#否则，直接指定ninfod为读取Makefile的一个路径。
 
 # -------------------------------------
 # modules / check-kernel are only for ancient kernels; obsolete
