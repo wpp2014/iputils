@@ -281,7 +281,10 @@ snapshot:
 	@mv iputils.spec.tmp iputils.spec
 	@echo "static char SNAPSHOT[] = \"$(TAG)\";" > SNAPSHOT.h
 	@$(MAKE) -C doc snapshot
-	@$(MAKE) man				
+	@$(MAKE) man	
+	#修改/添加/上传 文件
 	@git commit -a -m "iputils-$(TAG)"
+	#创建带有说明的标签，并用私钥签名
 	@git tag -s -m "iputils-$(TAG)" $(TAG)
+	#
 	@git archive --format=tar --prefix=iputils-$(TAG)/ $(TAG) | bzip2 -9 > ../iputils-$(TAG).tar.bz2
