@@ -44,7 +44,7 @@ WITHOUT_IFADDRS=no
 ARPING_DEFAULT_DEVICE=
 
 # GNU TLS library for ping6 [yes|no|static]
-#允许ping6加密协议库
+#允许ping6使用加密协议库
 USE_GNUTLS=yes
 # Crypto library for ping6 [shared|static]
 #允许和ping6共享加密的库
@@ -78,21 +78,24 @@ FUNC_LIB = $(if $(filter static,$(1)),$(LDFLAG_STATIC) $(2) $(LDFLAG_DYNAMIC),$(
 
 # USE_GNUTLS: DEF_GNUTLS, LIB_GNUTLS
 # USE_CRYPTO: LIB_CRYPTO
-#如果USE_GNUTLS不是"no",
+#如果USE_GNUTLS不是"no",则以变量USE_GNUTLS和LDFLAG_GNUTLS的内容为参数调用FUNC_LIB,并将结果赋给LIB_CRYPTO。
+#因为USE_GNUTLS的值是yes,所以可以调用。
 ifneq ($(USE_GNUTLS),no)
 	LIB_CRYPTO = $(call FUNC_LIB,$(USE_GNUTLS),$(LDFLAG_GNUTLS))
+	#将-DUSE_GNUTLS这个参数赋给DEF_CRYPTO.
 	DEF_CRYPTO = -DUSE_GNUTLS
 else
-	LIB_CRYPTO = $(call FUNC_LIB,$(USE_CRYPTO),$(LDFLAG_CRYPTO))
+	LIB_CRYPTO = $(call FUNC_LIB,$(USE_CRYPTO),$(LDFLAG_CRYPTO))	#否则，以变量USE_CRYPTO和LDFLAG_CRYPTO的内容为参数调用FUNC_LIB,并将结果赋给LIB_CRYPTO。
 endif
 
 # USE_RESOLV: LIB_RESOLV
+#以变量USE_RESOLV和LDFLAG_RESOLV的内容为参数调用FUNC_LIB,并将结果赋给LIB_RESOLV。
 LIB_RESOLV = $(call FUNC_LIB,$(USE_RESOLV),$(LDFLAG_RESOLV))
 
 # USE_CAP:  DEF_CAP, LIB_CAP
-ifneq ($(USE_CAP),no)
-	DEF_CAP = -DCAPABILITIES
-	LIB_CAP = $(call FUNC_LIB,$(USE_CAP),$(LDFLAG_CAP))
+ifneq ($(USE_CAP),no)			#判断USE_CAP的值是否为no。
+	DEF_CAP = -DCAPABILITIES	#如果不是则将参数-DCAPABILITIES赋给DEF_CAP
+	LIB_CAP = $(call FUNC_LIB,$(USE_CAP),$(LDFLAG_CAP))	#以变量USE_CAP和LDFLAG_CAP的内容为参数调用FUNC_LIB,并将结果赋给LIB_RESOLV。
 endif
 
 # USE_SYSFS: DEF_SYSFS, LIB_SYSFS
@@ -131,28 +134,45 @@ IPV6_TARGETS=tracepath6 traceroute6 ping6
 TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
 
 CFLAGS=$(CCOPTOPT) $(CCOPT) $(GLIBCFIX) $(DEFINES)   #编译选项
-LDLIBS=$(LDLIB) $(ADDLIB)			     
+LDLIBS=$(LDLIB) $(ADDLIB)			     #链接的库函数
 
 #将命令 uname -n 的输出给变量UNAME_N
 UNAME_N:=$(shell uname -n)
 LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')
+#以%Y/%m/%d的格式输出年月日。如：20140508， 并保存到TODAY变量中。
 TODAY=$(shell date +%Y/%m/%d)
+#以不同的格式输出并保存日期，存放到DATE变量中，同时赋给TAG。
 DATE=$(shell date --date $(TODAY) +%Y%m%d)	
 TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)
 
 
 # -------------------------------------
+#伪指令，make+不同的命令来执行。
 .PHONY: all ninfod clean distclean man html check-kernel modules snapshot
 
 all: $(TARGETS)
-
+#删除所有的.o文件，将所有的.c文件编译成对应的.s文件。
 %.s: %.c
 	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -S -o $@
+#删除所有的.o文件，将所有的.s文件编译成对应的.o文件。
 %.o: %.c
 	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -o $@
+#将所有的.o文件编译生成目标所要的可执行文件。
 $(TARGETS): %: %.o
 	$(LINK.o) $^ $(LIB_$@) $(LDLIBS) -o $@
+	
 
+# COMPILE.c=$(CC) $(CFLAGS) $(CPPFLAGS) -c
+# $< 依赖目标中的第一个目标名字 
+# $@ 表示目标
+# $^ 所有的依赖目标的集合 
+# 在$(patsubst %.o,%,$@ )中，patsubst把目标中的变量符合后缀是.o的全部删除,  DEF_ping
+# LINK.o把.o文件链接在一起的命令行,缺省值是$(CC) $(LDFLAGS) $(TARGET_ARCH)
+#
+#
+#以ping为例，翻译为：e
+# gcc -O3 -fno-strict-aliasing -Wstrict-prototypes -Wall -g -D_GNU_SOURCE    -c ping.c -DCAPABILITIES   -o ping.o
+#gcc   ping.o ping_common.o -lcap    -o ping
 # -------------------------------------
 # arping
 DEF_arping = $(DEF_SYSFS) $(DEF_CAP) $(DEF_IDN) $(DEF_WITHOUT_IFADDRS)
