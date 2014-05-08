@@ -78,7 +78,7 @@ FUNC_LIB = $(if $(filter static,$(1)),$(LDFLAG_STATIC) $(2) $(LDFLAG_DYNAMIC),$(
 
 # USE_GNUTLS: DEF_GNUTLS, LIB_GNUTLS
 # USE_CRYPTO: LIB_CRYPTO
-#如果USE_GNUTLS是"no",
+#如果USE_GNUTLS不是"no",
 ifneq ($(USE_GNUTLS),no)
 	LIB_CRYPTO = $(call FUNC_LIB,$(USE_GNUTLS),$(LDFLAG_GNUTLS))
 	DEF_CRYPTO = -DUSE_GNUTLS
@@ -131,9 +131,9 @@ IPV6_TARGETS=tracepath6 traceroute6 ping6
 TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
 
 CFLAGS=$(CCOPTOPT) $(CCOPT) $(GLIBCFIX) $(DEFINES)   #编译选项
-LDLIBS=$(LDLIB) $(ADDLIB)			     #
+LDLIBS=$(LDLIB) $(ADDLIB)			     
 
-UNAME_N:=$(shell uname -n)
+UNAME_N:=$(shell uname -n)	#将命令 uname -n 的输出给变量UNAME_N
 LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')
 TODAY=$(shell date +%Y/%m/%d)
 DATE=$(shell date --date $(TODAY) +%Y%m%d)
@@ -220,7 +220,7 @@ ninfod:
 # -------------------------------------
 # modules / check-kernel are only for ancient kernels; obsolete
 check-kernel:
-ifeq ($(KERNEL_INCLUDE),)
+ifeq ($(KERNEL_INCLUDE),)			#如果KER
 	@echo "Please, set correct KERNEL_INCLUDE"; false
 else
 	@set -e; \
